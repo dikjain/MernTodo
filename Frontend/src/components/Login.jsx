@@ -44,7 +44,7 @@ function Login() {
 
 
   return (
-    <div className='w-[90%] md:w-[70%] lg:w-[50%] xl:w-[40%] h-[90%] my-[20px] bg-[violet] rounded-xl p-2 flex flex-col items-center justify-around'>
+    <div className='w-[90%] h-[90%] my-[20px] bg-[violet] rounded-xl p-2 flex flex-col items-center justify-around'>
     <h1 className='text-white text-3xl font-bold font-sans'>Login</h1>
     <form onSubmit={sendData} className='w-full flex flex-col items-center'>
       <input name='email' onChange={handleChange} type='text' placeholder='Email' className='border-2 my-[3px] bg-black border-gray-200 p-2 w-full rounded-xl' />
