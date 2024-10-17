@@ -11,17 +11,18 @@ const createTodo = async (req, res) => {
         if (!user) {
             return res.status(404).json({ msg: "User not found" });
         }
-        const todo = await Todo.create({
+        let todo = await Todo.create({
             isDone: false,
             title,
             user: user._id
         });
-        const finalTodo = await Todo.findById(todo._id).populate('user');
-        user.todos.push(finalTodo);
+        todo = await Todo.findById(todo._id).populate('user',"-password");
+        user.todos.push(todo);
         await user.save();
+        await todo.save();
         res.status(201).json({
             msg: "Todo created successfully",
-            finalTodo
+            finalTodo: todo
         });
     } catch (err) {
         res.status(500).json({ msg: err.message });

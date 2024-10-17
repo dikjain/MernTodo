@@ -27,7 +27,7 @@ function CREDTodo() {
                 },
             };
             if (!isEdit) {
-                const { data } = await axios.post("/api/todo/create", { title, id: userInfo._id }, config)
+                await axios.post("/api/todo/create", { title, id: userInfo._id }, config)
             } else {
                 await axios.post("/api/todo/UpdateTodo", { title, id: isEdit.id }, config)
                 setIsEdit(false)
