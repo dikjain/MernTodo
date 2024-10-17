@@ -16,7 +16,7 @@ const createTodo = async (req, res) => {
             title,
             user: user._id
         });
-        const finalTodo = await Todo.findById(todo._id).populate('user', '-password');
+        const finalTodo = await Todo.findById(todo._id).populate('user');
         user.todos.push(finalTodo);
         await user.save();
         res.status(201).json({
