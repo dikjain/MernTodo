@@ -3,30 +3,29 @@ import User from "../models/user.model.js";
 
 const createTodo = async (req, res) => {
     const { title , id  } = req.body;
-
-    if (!title || !id) {
-        return res.status(410).json({ msg: "Please provide all fields" });
+    try {
+        if (!title || !id) {
+            return res.status(400).json({ msg: "Please provide all fields" });
+        }
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ msg: "User not found" });
+        }
+        const todo = await Todo.create({
+            isDone: false,
+            title,
+            user: user._id
+        });
+        const finalTodo = await Todo.findById(todo._id).populate('user', '-password');
+        user.todos.push(finalTodo);
+        await user.save();
+        res.status(201).json({
+            msg: "Todo created successfully",
+            finalTodo
+        });
+    } catch (err) {
+        res.status(500).json({ msg: err.message });
     }
-    const user  = await User.findById(id)
-    if(!user){
-        return res.status(414).json({ msg: "User not found" });
-    }
-    const todo = await Todo.create({
-        isDone: false,
-        title,
-        user: user._id
-    })
-    const finalTodo = await Todo.findById(todo._id)
-    .populate({
-        path: 'user',
-        select: '-password'  // Exclude the password field
-    });
-    await user.todos.push(finalTodo)
-    await user.save()
-    res.status(200).json({
-        msg: "Todo created successfully",
-        finalTodo
-    })
 }
 
 
