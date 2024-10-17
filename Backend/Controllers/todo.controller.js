@@ -2,33 +2,46 @@ import Todo from "../models/todo.model.js";
 import User from "../models/user.model.js";
 
 const createTodo = async (req, res) => {
-    const { title , id  } = req.body;
+    const { title, id } = req.body; // Get title and user ID from request body
     try {
+        // Check if all necessary fields are provided
         if (!title || !id) {
             return res.status(400).json({ msg: "Please provide all fields" });
         }
+
+        // Find the user by ID
         const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ msg: "User not found" });
         }
+
+        // Create a new todo, referencing the user by their ID
         let todo = await Todo.create({
             isDone: false,
             title,
-            user: user._id
+            user: user._id // Reference the user by ID
         });
-        todo = await Todo.findById(todo._id).populate('user',"-password");
+
+        // Populate the 'user' field in the created todo, excluding the password
+        todo = await Todo.findById(todo._id).populate('user', "-password");
+
+        // Push the created todo to the user's 'todos' array
         user.todos.push(todo);
+
+        // Save the updated user and todo
         await user.save();
         await todo.save();
+
+        // Send response with the populated todo
         res.status(201).json({
             msg: "Todo created successfully",
-            finalTodo: todo
+            finalTodo: todo // Populated todo data
         });
     } catch (err) {
+        // Handle any errors
         res.status(500).json({ msg: err.message });
     }
-}
-
+};
 
 
  const GetTodo = async (req, res) => {
